@@ -7,12 +7,15 @@ import pandas as pd
 import time
 import logging
 from datetime import datetime, timedelta
+import os
+from dotenv import load_dotenv
 
-# --- Configuration ---
-# !! IMPORTANT: Store these securely, e.g., environment variables or a config file !!
-OANDA_API_KEY = "89c68ff389fa5e86dd30e8aff7c8935a-b0cb097b4475427f7be111d81e76c94b"  # Replace with your actual API key
-OANDA_ACCOUNT_ID = "Armaan Sachdeva" # Replace with your account ID
-OANDA_ENVIRONMENT = "practice" # Use "live" for real money, "practice" for demo
+load_dotenv()
+
+OANDA_API_KEY = os.getenv("OANDA_API_KEY")
+OANDA_ACCOUNT_ID = os.getenv("OANDA_ACCOUNT_ID")
+OANDA_ENVIRONMENT = os.getenv("OANDA_ENVIRONMENT")
+
 
 # Strategy Parameters (from your latest successful WF OOS run, e.g., row 1)
 # These need to be updated based on periodic re-optimization
@@ -40,27 +43,21 @@ STRATEGY_PARAMS = {
 }
 
 # --- Logging Setup ---
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s - %(levelname)s - %(message)s',
-                    handlers=[logging.FileHandler("trading_log.log"),
-                              logging.StreamHandler()])
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', handlers=[logging.FileHandler("trading_log.log"), logging.StreamHandler()])
 
-# --- OANDA API Client ---
+
 try:
     api = oandapyV20.API(access_token=OANDA_API_KEY, environment=OANDA_ENVIRONMENT)
     logging.info("Successfully connected to OANDA API.")
 except Exception as e:
     logging.error(f"Failed to connect to OANDA API: {e}")
-    exit() # Exit if connection fails
+    exit()
 
 # --- Global State ---
 last_trade_exit_time = None
 cooldown_active = False
 
-# --- Indicator Calculation Functions (Adapt from finance.ipynb) ---
-# IMPORTANT: You need to copy or refactor the relevant indicator calculation
-# functions from your finance.ipynb notebook here.
-# These functions will need to work on pandas DataFrames fetched from OANDA.
+# --- Indicator Calculation Functions ---
 
 def calculate_atr(df, period=14):
     """Calculates Average True Range."""
@@ -166,7 +163,6 @@ def get_open_positions():
     except Exception as e:
         logging.error(f"Error fetching open positions: {e}")
     return []
-
 
 def place_order(instrument, units, stop_loss_pips, take_profit_pips):
     """Places a market order with SL and TP."""
