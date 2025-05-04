@@ -5,6 +5,26 @@ from dotenv import load_dotenv
 import pandas as pd
 import numpy as np
 import pandas_ta as ta  # Make sure to install this: pip install pandas_ta
+import datetime
+
+# Function to check if forex market is open
+def is_forex_market_open():
+    """Check if the forex market is open based on day and hour"""
+    now = datetime.datetime.now(datetime.timezone.utc)
+    weekday = now.weekday()  # Monday is 0, Sunday is 6
+    current_hour = now.hour
+    
+    # Market is closed on weekends (Saturday and Sunday)
+    if weekday == 5 or weekday == 6:  # Saturday or Sunday
+        return False
+    
+    # Market closed for a few hours between day rollovers (usually around 22:00-22:05 UTC Friday)
+    if weekday == 4 and current_hour >= 22 and now.minute < 5:
+        return False
+        
+    # Additional checks could be added for holidays or specific maintenance periods
+    # For now, assume market is open during weekdays
+    return True
 
 # Function to calculate EMAs and SMA
 def calculate_ema_indicators(df, params):
@@ -167,7 +187,6 @@ if __name__ == "__main__":
         'trade_units': 1000  # Example trade size
     }
 
-    # Initialize trader with EMA strategy
     trader = OandaTrader(
         api=api,
         account_id=OANDA_ACCOUNT_ID,
@@ -176,7 +195,8 @@ if __name__ == "__main__":
         indicator_functions={
             'ema_indicators': calculate_ema_indicators,
             'adx': calculate_adx
-        }
+        },
+        is_market_open_function=is_forex_market_open  # Pass the market check function
     )
 
     # Run the strategy

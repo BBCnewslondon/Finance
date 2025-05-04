@@ -225,12 +225,16 @@ class OandaTrader:
 
                     if latest_signal == 1:  # Long signal
                         self.logger.info(f"LONG signal detected for {self.strategy_params['instrument']}")
+                        
+                        # Extract the latest stop loss and take profit pips as scalar values
+                        stop_loss_pips = float(df['stop_loss_pips'].iloc[-1])
+                        take_profit_pips = float(df['take_profit_pips'].iloc[-1])
 
                         fill_info = self.place_order(
                             self.strategy_params['instrument'],
                             self.strategy_params['trade_units'],
-                            self.strategy_params['stop_loss_pips'],
-                            self.strategy_params['take_profit_pips']
+                            stop_loss_pips,
+                            take_profit_pips
                         )
 
                         if fill_info:
@@ -242,12 +246,16 @@ class OandaTrader:
 
                     elif latest_signal == -1:  # Short signal
                         self.logger.info(f"SHORT signal for {self.strategy_params['instrument']}")
+                        
+                        # Extract the latest stop loss and take profit pips as scalar values
+                        stop_loss_pips = float(df['stop_loss_pips'].iloc[-1])
+                        take_profit_pips = float(df['take_profit_pips'].iloc[-1])
 
                         fill_info = self.place_order(
                             self.strategy_params['instrument'],
                             -self.strategy_params['trade_units'],
-                            self.strategy_params['stop_loss_pips'],
-                            self.strategy_params['take_profit_pips']
+                            stop_loss_pips,
+                            take_profit_pips
                         )
 
                         if fill_info:
