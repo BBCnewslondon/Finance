@@ -144,6 +144,10 @@ def calculate_signals(df, params):
     return df
 
 def is_time_to_run_trader():
+    current_day = datetime.date.today().weekday()
+    if not (current_day >= 0 and current_day <=4):
+        return False
+    
     current_time = datetime.datetime.now()
     return current_time >= datetime.datetime.strptime('08:00','%H:%M') and current_time <= datetime.datetime.strptime('11:00','%H:%M')
     
