@@ -143,6 +143,11 @@ def calculate_signals(df, params):
     
     return df
 
+def is_time_to_run_trader():
+    current_time = datetime.datetime.now()
+    return current_time >= datetime.datetime.strptime('08:00','%H:%M') and current_time <= datetime.datetime.strptime('11:00','%H:%M')
+    
+
 if __name__ == "__main__":
     load_dotenv()
 
@@ -162,7 +167,7 @@ if __name__ == "__main__":
         'swing_window': 7,  # Window for swing high/low calculation
         'adx_period': 14,  # ADX period
         'adx_threshold': 15,  # Minimum ADX value for trend filter
-        'risk_reward_ratio': 4,  # 1:4 risk-reward ratio from notebook
+        'risk_reward_ratio': 3,  # 1:4 risk-reward ratio from notebook
         'trade_units': 1000  # Example trade size
     }
 
@@ -177,5 +182,5 @@ if __name__ == "__main__":
         }
     )
 
-    # Run the strategy
-    trader.run_trader(sleep_duration=60)  # Check for signals every 60 seconds
+    while is_time_to_run_trader():
+        trader.run_trader(sleep_duration=60)  # Check for signals every 60 seconds
