@@ -185,6 +185,8 @@ if __name__ == "__main__":
             'adx': calculate_adx
         }
     )
+    # print("Initializing")
 
-    while is_time_to_run_trader():
-        trader.run_trader(sleep_duration=60)  # Check for signals every 60 seconds
+    # if is_time_to_run_trader():
+    print("Running trader")
+    trader.run_trader(sleep_duration=60)  # Check for signals every 60 seconds
