@@ -174,7 +174,7 @@ class OandaTrader:
                 if self.cooldown_active:
                     cooldown_end_time = self.last_trade_exit_time + timedelta(hours=self.strategy_params['cooldown_periods'])
 
-                    if datetime.datetime.datetime.now(datetime.UTC) >= cooldown_end_time:
+                    if datetime.datetime.now(datetime.UTC) >= cooldown_end_time:
                         self.cooldown_active = False
                         self.last_trade_exit_time = None
                         self.logger.info("Cooldown finished")
